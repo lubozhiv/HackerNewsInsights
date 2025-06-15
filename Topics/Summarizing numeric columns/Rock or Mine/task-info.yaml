@@ -1,0 +1,12 @@
+type: dataset
+custom_name: Rock or Mine?
+files:
+  - name: main.py
+    visible: true
+    learner_created: false
+  - name: data/sample/input.txt
+    visible: true
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/13366#comment
+status: Unchecked
+record: -1

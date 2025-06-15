@@ -1,0 +1,15 @@
+type: hyperskill
+title: HackerNews Insights
+language: English
+summary: "<p>In this project, you will develop an automated pipeline to collect, enrich,\
+  \ and analyze Hacker News data, exploring correlations between stock prices, GitHub\
+  \ metrics, MAANG company mentions, and technology trends using Airflow, APIs, PostgreSQL,\
+  \ and natural language processing.</p><br/><br/>Learn more at <a href=\"https://hyperskill.org/projects/539?utm_source=ide&utm_medium=ide&utm_campaign=ide&utm_content=project-card\"\
+  >https://hyperskill.org/projects/539</a>"
+programming_language: Python
+environment: unittest
+content:
+  - HackerNews Insights
+  - Topics
+mode: Study
+yaml_version: 3

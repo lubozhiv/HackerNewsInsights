@@ -1,0 +1,48 @@
+<div class="step-text">
+<h5 id="theory">Theory</h5><p>To complete this stage, you need to use <strong>VADER</strong> (Valence Aware Dictionary and Sentiment Reasoner). It is a lexicon and rule-based sentiment analysis tool designed for social media text, but it works well on general text too. VADER provides sentiment scores: positive, negative, neutral, and a compound score, which summarizes the overall sentiment of the text. We can import it from NLTK and perform semantic analysis:</p><pre><code class="language-python"># Import necessary modules from NLTK
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+# Download the VADER sentiment lexicon
+nltk.download('vader_lexicon')
+
+# Initialize the sentiment analyzer
+analyzer = SentimentIntensityAnalyzer()
+
+# Function to classify sentiment as positive, negative, or neutral
+# VADER authors recommend ±0.05 as thresholds for sentiment classification
+def get_sentiment(text):
+    scores = analyzer.polarity_scores(text) # Get sentiment scores
+    compound = scores['compound']           # Overall sentiment score
+    if compound &gt;= 0.05:                    # Threshold for positive
+        return 'positive'
+    elif compound &lt;= -0.05:                 # Threshold for negative
+        return 'negative'
+    else:
+        return 'neutral'                    # Between -0.05 and 0.05 is neutral</code></pre><h5 id="description">Description</h5><p>In the final stage of the project, we will extract technology-related keywords and set up a Dockerfile to automate semantic analysis within the Airflow environment. Firstly, we will extract technology-related keywords from the top stories collected in Stage 2, count their mentions, and visualize the popularity of tech terms. Unlike the previous stages that focused on fetching and loading data into the database, this stage includes automated data analysis within the workflow. Moreover, it involves the use of NLTK and spaCy for natural language processing tasks such as keyword extraction and semantic analysis.</p><h5 id="objectives">Objectives</h5><p>In this stage, you will:</p><ul><li><p>Extract technology-related keywords from Hacker News top stories and use NLTK and spaCy to perform NLP tasks that count keyword frequencies.</p></li><li><p>Build a Dockerized Apache Airflow environment that fetches the latest Hacker News comments, analyzes their sentiment using NLTK, and loads them into a PostgreSQL database.</p></li></ul><p>Here is a detailed explanation for each step:</p><p>Part 1: Use the <code class="language-python">dataset/hn_stories.csv</code> from the previous stage which contains the top Hacker News stories. This dataset will be the source of story titles from which we will extract technology-related keywords. First, clean and preprocess these titles by removing any punctuation and converting all text to lowercase to ensure uniformity. Then, use the NLP libraries spaCy and NLTK to process the text:</p><ul><li><p>Tokenize the titles with spaCy’s <code class="language-python">en_core_web_sm</code> model to split text into meaningful tokens.</p></li><li><p>Extract only the nouns and proper nouns, as these are most likely to represent relevant technology terms.</p></li><li><p>Use NLTK’s stopwords list to filter out common English words that don’t add value (like "the", "and", "is"), and also remove very short words less than 3 characters to avoid noise.</p></li><li><p>Count how often each extracted keyword appears across all titles.</p></li></ul><p>Finally, save the top 100 most frequent keywords along with their counts into a CSV file named <code class="language-python">tech_words.csv</code> . This process helps identify popular technology-related terms from the Hacker News stories.</p><p>Part 2: To start automating the process inside a Dockerized Airflow environment, we need to build a custom image with all dependencies installed. You can use instructions for setting up <code class="language-python">docker-compose.yaml</code> from the first stage, but you also need to:</p><ul><li><p>Create a <code class="language-python">requirements.txt</code> file listing Python packages:</p></li></ul><pre><code class="language-python">pandas
+nltk
+psycopg2-binary
+requests
+spacy</code></pre><ul><li><p>Write a <code class="language-python">Dockerfile</code> based on the official Airflow image that:</p></li></ul><pre><code class="language-python"># Use the official Apache Airflow image as the base
+FROM apache/airflow:3.0.1
+
+# Switch to root user to install system-level dependencies
+USER root
+
+# Update package lists and install build tools and PostgreSQL development headers
+RUN apt-get update &amp;&amp; apt-get install -y build-essential libpq-dev \\
+    &amp;&amp; apt-get clean &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+# Switch back to the airflow user for security and best practices
+USER airflow
+
+# Copy the requirements file to the container
+COPY requirements.txt .
+
+# Install Python dependencies from requirements.txt without cache to reduce image size
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Download required NLTK data packages for NLP tasks
+RUN python -m nltk.downloader vader_lexicon stopwords punkt wordnet</code></pre><ul><li><p>Update the Airflow service in your <code class="language-python">docker-compose.yaml</code> to build your custom Docker image instead of pulling the base image. This change should look like:</p></li></ul><pre><code class="language-python"># image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.0.1}
+build: .</code></pre><p>Then, you need to create an Airflow DAG that automates the end-to-end pipeline for processing Hacker News comments. It consists of three tasks:</p><ol><li><p>fetching the latest comments from the Hacker News API and retrieve all detailed information associated with each comment.</p></li><li><p>analyzing sentiment using NLTK and other NLP tools listed in the <code class="language-python">requirements.txt</code> and <code class="language-python">Dockerfile</code>,</p></li><li><p>saving both raw and analyzed data to CSV files (<code class="language-python">hn_comments.csv</code> and <code class="language-python">comments_analysis.csv</code>) and loading them into PostgreSQL tables for structured storage.</p></li></ol><h5 id="examples">Examples</h5><p>Example of <code class="language-python">tech_words.csv</code> file with popular tech words and their counts:</p><table><tbody><tr><th><p>word</p></th><th><p>count</p></th></tr><tr><td><p>programming</p></td><td><p>13</p></td></tr><tr><td><p>language</p></td><td><p>13</p></td></tr><tr><td><p>people</p></td><td><p>12</p></td></tr></tbody></table><p>Example of <code class="language-python">comments_analysis.csv</code> file:</p><table><tbody><tr><td style="width: 84px"><p>id</p></td><td style="width: 66px"><p>author</p></td><td style="width: 316px"><p>text</p></td><td style="width: 292px"><p>processed_text</p></td><td style="width: 87px"><p>sentiment</p></td></tr><tr><td style="width: 84px"><p>44051535</p></td><td style="width: 66px"><p>bccdee</p></td><td style="width: 316px"><p>"No. Greed is inherent to humans. No social order can eliminate greed. They can, however, mitigate the harmful effects of greed on society.&lt;p&gt;In a democracy, elected leaders are not as empowered to satisfy their greed as monarchs are in monarchies. Socialism extends this logic to businesses: An elected business leader would not be able to satisfy their greed to the same extent that a capitalist business owner can."</p></td><td style="width: 292px"><p>greed inherent human social order eliminate greed however mitigate harmful effect greed p democracy elected leader empowered satisfy greed monarch monarchy socialism extends logic business elected business leader would able satisfy greed extent capitalist business owner</p></td><td style="width: 87px"><p>negative</p></td></tr><tr><td style="width: 84px"><p>44051534</p></td><td style="width: 66px"><p>Qem</p></td><td style="width: 316px"><p>"&gt; Microsoft's stock price is dependent on them proving that this is a success.&lt;p&gt;Perhaps this explains the recent firings that affected faster CPython and other projects. While they throw money at AI but sucess still doesn't materialize, they need to make the books look good for yet another quarter through the old-school reliable method of laying off people left and right."</p></td><td style="width: 292px"><p>microsoft stock price dependent proving p perhaps explains recent firing affected faster cpython project throw money ai sucess still materialize need make book look good yet another quarter reliable method laying people left right</p></td><td style="width: 87px"><p>positive</p></td></tr></tbody></table><p>In this dataset:</p><ul><li><p><code class="language-python">id</code>: Unique comment ID on Hacker News.</p></li><li><p><code class="language-python">author</code>: Username of the commenter.</p></li><li><p><code class="language-python">text</code>: Original raw comment text, which may include HTML tags.</p></li><li><p><code class="language-python">processed_text</code>: Cleaned and tokenized version of the comment text, stripped of HTML and stopwords for easier analysis.</p></li><li><p><code class="language-python">sentiment</code>: Sentiment classification of the comment (e.g., positive, negative), indicating the emotional tone.</p></li></ul>
+</div>

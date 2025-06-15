@@ -1,0 +1,6 @@
+type: framework
+content:
+  - Data Pipeline with Airflow and PostgreSQL
+  - API Integration
+  - NLP Tasks
+current_task: 2

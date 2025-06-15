@@ -1,0 +1,265 @@
+hyperskill_project:
+  id: 539
+  ide_files: https://hyperskill.org/api/projects/539/additional-files/additional_files.json
+  is_template_based: false
+  use_ide: true
+  environment: unittest
+update_date: "Sun, 15 Jun 2025 20:11:48 UTC"
+stages:
+  - id: 3120
+    step: 52609
+    is_completed: true
+  - id: 3121
+    step: 52610
+    is_completed: true
+  - id: 3122
+    step: 52611
+    is_completed: true
+topics:
+  0:
+    - title: Computer algorithms
+      theory_id: 16547
+    - title: Operating systems
+      theory_id: 9704
+    - title: Command line overview
+      theory_id: 8977
+    - title: Parameters and options
+      theory_id: 9746
+    - title: World Wide Web
+      theory_id: 6633
+    - title: "HTTP: HyperText Transfer Protocol"
+      theory_id: 6569
+    - title: HTTP URL
+      theory_id: 6740
+    - title: HTTP messages
+      theory_id: 6752
+    - title: Intro to Machine Learning
+      theory_id: 10403
+    - title: Typical ML pipeline
+      theory_id: 10411
+    - title: Introduction to Airflow
+      theory_id: 33621
+    - title: "Operators, hooks, and sensors in Airflow"
+      theory_id: 40535
+    - title: Sustainable Airflow practices
+      theory_id: 45432
+    - title: The first DAG in Airflow
+      theory_id: 40768
+    - title: Introduction to Python
+      theory_id: 5204
+    - title: Multi-line programs
+      theory_id: 5233
+    - title: Taking user's input
+      theory_id: 5913
+    - title: Program with numbers
+      theory_id: 5872
+    - title: Importing modules
+      theory_id: 6019
+    - title: Creating modules
+      theory_id: 6057
+    - title: Multiple modules. Package
+      theory_id: 6384
+    - title: Installing packages with pip
+      theory_id: 6230
+    - title: What are databases
+      theory_id: 8497
+    - title: "SQL: structured query language"
+      theory_id: 7054
+    - title: "Requests: retrieving data"
+      theory_id: 8603
+    - title: Introduction to PostgreSQL
+      theory_id: 17974
+    - title: Basic data types
+      theory_id: 5852
+    - title: Variables
+      theory_id: 5859
+    - title: "Integer arithmetic: basic operations"
+      theory_id: 5865
+    - title: Invoking functions
+      theory_id: 5891
+    - title: Declaring functions
+      theory_id: 5900
+    - title: Dictionary
+      theory_id: 6481
+  1:
+    - title: What is math?
+      theory_id: 28537
+    - title: Applications of math
+      theory_id: 28832
+    - title: The concept of probability
+      theory_id: 38243
+    - title: Probability and Statistics
+      theory_id: 11637
+    - title: Starting with GitHub
+      theory_id: 4802
+    - title: Numerical and categorical data
+      theory_id: 24686
+    - title: Population and sample
+      theory_id: 11274
+    - title: "Mean, median, and mode"
+      theory_id: 11282
+    - title: Personal Access token
+      theory_id: 40645
+    - title: GitHub API
+      theory_id: 46583
+    - title: Starting with git
+      theory_id: 10894
+    - title: Local repository
+      theory_id: 10901
+    - title: Working with remote repository
+      theory_id: 12299
+    - title: Date and time formatting
+      theory_id: 31623
+    - title: Working with datetime data in pandas
+      theory_id: 25879
+    - title: If statement
+      theory_id: 5953
+    - title: Else statement
+      theory_id: 5932
+    - title: For loop
+      theory_id: 6065
+    - title: The Jupyter Notebook
+      theory_id: 12623
+    - title: Google Colab
+      theory_id: 12631
+    - title: Libraries
+      theory_id: 8504
+    - title: Frameworks
+      theory_id: 6701
+    - title: Class
+      theory_id: 6661
+    - title: Class instances
+      theory_id: 6669
+    - title: Methods
+      theory_id: 6931
+    - title: Methods and attributes
+      theory_id: 6981
+    - title: While loop
+      theory_id: 5940
+    - title: "Loop control: break, continue, pass"
+      theory_id: 6302
+    - title: Datetime module
+      theory_id: 7324
+    - title: Introduction to API
+      theory_id: 17007
+    - title: Introduction to pandas
+      theory_id: 10416
+    - title: Reading data in pandas
+      theory_id: 31809
+    - title: Data types in pandas
+      theory_id: 33215
+    - title: Authentication and Authorization
+      theory_id: 14219
+    - title: Series
+      theory_id: 10421
+    - title: DataFrame
+      theory_id: 10933
+    - title: Accessing data in a DataFrame
+      theory_id: 12998
+    - title: .loc & .iloc
+      theory_id: 13343
+    - title: Summarizing numeric columns
+      theory_id: 13359
+    - title: Grouping and aggregating data in pandas
+      theory_id: 12585
+    - title: Reshaping and Pivot Tables
+      theory_id: 12611
+    - title: Summarizing categorical columns
+      theory_id: 13351
+    - title: Environment variables
+      theory_id: 21817
+    - title: Datetime parsing and formatting
+      theory_id: 9814
+    - title: Boolean type and operations. True and false
+      theory_id: 6025
+    - title: Comparisons
+      theory_id: 5920
+    - title: List
+      theory_id: 5979
+    - title: Global vs local. Scopes
+      theory_id: 6322
+    - title: "Function, arguments and parameters"
+      theory_id: 7248
+    - title: Quotes and multi-line strings
+      theory_id: 5814
+    - title: String formatting
+      theory_id: 6037
+    - title: "Working with strings: basic methods"
+      theory_id: 6842
+    - title: Escape sequences
+      theory_id: 7130
+    - title: Splitting strings and joining lists
+      theory_id: 6972
+    - title: Type casting
+      theory_id: 6224
+    - title: Sep and end arguments of print
+      theory_id: 7452
+  2:
+    - title: Units of information
+      theory_id: 6865
+    - title: First program in bash
+      theory_id: 12135
+    - title: Functions and arguments
+      theory_id: 12188
+    - title: Explore folders and files
+      theory_id: 12495
+    - title: IP
+      theory_id: 13662
+    - title: SSH
+      theory_id: 19129
+    - title: POS tagging
+      theory_id: 22449
+    - title: "Introduction to docker, installation"
+      theory_id: 15850
+    - title: Run the "hello-world" docker container
+      theory_id: 16020
+    - title: Basic operations with a container
+      theory_id: 17573
+    - title: Docker build and docker tag
+      theory_id: 23950
+    - title: "Dockerfile (FROM, LABEL, CMD, ENTRYPOINT)"
+      theory_id: 24322
+    - title: "Dockerfile (RUN, SHELL)"
+      theory_id: 25768
+    - title: Best practices for writing Dockerfiles
+      theory_id: 26511
+    - title: Files
+      theory_id: 13025
+    - title: Introduction to Linux
+      theory_id: 9526
+    - title: Regexps in Python
+      theory_id: 9468
+    - title: Escaping in regexps
+      theory_id: 9754
+    - title: Regexp sets and ranges
+      theory_id: 10035
+    - title: Shorthands
+      theory_id: 10142
+    - title: Regexp quantifiers
+      theory_id: 10355
+    - title: Natural language processing
+      theory_id: 9157
+    - title: Introduction to NLTK
+      theory_id: 31188
+    - title: Text corpora in NLTK
+      theory_id: 10503
+    - title: Overview of SpaCy
+      theory_id: 11197
+    - title: Tokenization
+      theory_id: 51949
+    - title: Tokenization implementation
+      theory_id: 10363
+    - title: Lemmatization
+      theory_id: 31378
+    - title: Containers
+      theory_id: 15082
+    - title: Indexes
+      theory_id: 6189
+    - title: Identity testing
+      theory_id: 8077
+    - title: Tuple
+      theory_id: 7462
+    - title: Slicing
+      theory_id: 6177
+    - title: Regular expression
+      theory_id: 7580

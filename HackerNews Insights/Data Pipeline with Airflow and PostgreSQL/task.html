@@ -1,0 +1,54 @@
+<div class="step-text">
+<h5 id="description">Description</h5><p>Welcome to the first stage of the 'HackerNews' project! To understand how to effectively run and manage Apache Airflow using containers, we highly recommend reading the <a href="https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html" rel="noopener noreferrer nofollow" target="_blank">Running Airflow in Docker</a> page from the official Airflow documentation. As you know, Airflow is an open-source platform used to programmatically author, schedule, and monitor workflows or DAGs for data pipelines and automation tasks.</p><p>In this project, you will work with the Hacker News API to collect and analyze data from the platform. The Hacker News API, maintained by YCombinator, provides access to stories, comments, user profiles, and activity data from the Hacker News platform. Specifically, you will use the following API endpoints:</p><ul><li><p><code class="language-python">https://hacker-news.firebaseio.com/v0/newstories.json</code> — returns a list of the latest 500 story IDs.</p></li><li><p><code class="language-python">https://hacker-news.firebaseio.com/v0/item/&lt;story_id&gt;.json</code> — returns full details of a single story by its ID.</p></li></ul><p>To work effectively with RESTful APIs like the Hacker News API, it’s essential to understand the typical flow of retrieving data:</p><ol><li><p>Send HTTP requests with <code class="language-python">requests.get()</code> method to access specific endpoints.</p></li><li><p>Convert the response into a usable Python object using .json(), for example:</p><pre><code class="language-python">story_ids = response.json()[:500]
+</code></pre></li><li><p>Loop through the data and append relevant fields to a structured list or dictionary for further use as:</p><pre><code class="language-python">stories.append({
+    'id': story_id,
+    'title': item['title'],
+    'author': item.get('by', 'unknown'), # Default to 'unknown' if missing
+    'created_at': datetime.fromtimestamp(item['time']), # Convert UNIX timestamp
+    'url': item.get('url', '') # Default to empty string if URL is missing
+})</code></pre></li><li><p>Finally, you can store the data by connecting to PostgreSQL using psycopg2, creating the <code class="language-python">hn_stories</code> table if it doesn’t exist, and committing the changes to the database. For example:</p><pre><code class="language-python">import psycopg2
+
+def load_data():
+    # Connect to the PostgreSQL database using psycopg2
+    conn = psycopg2.connect(**POSTGRES_CONN_INFO)
+    # Create a cursor to execute SQL queries
+    cursor = conn.cursor()
+    # Create the hn_stories table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS hn_stories (
+            id BIGINT PRIMARY KEY,
+            title TEXT,
+            author TEXT,
+            created_at TIMESTAMP,
+            url TEXT
+        );
+    """)
+    # Commit the transaction
+    conn.commit()
+    # Close cursor and connection
+    cursor.close()
+    conn.close()</code></pre></li></ol><h5 id="objectives">Objectives</h5><p>To begin with, you will develop a DAG script to:</p><ul><li><p>Fetch structured information from the Hacker News API endpoints.</p></li><li><p>Save the filtered stories to a CSV file.</p></li><li><p>Store the data in PostgreSQL, a powerful relational database.</p></li></ul><p>Here is a detailed explanation for each step:</p><p>Step 1. You will need to run the following commands to create the necessary folders and set the Airflow UID:</p><pre><code class="language-bash">mkdir -p ./dags ./logs ./plugins ./config ./dataset
+echo -e "AIRFLOW_UID=$(id -u)" &gt; .env</code></pre><p>On some operating systems, you might see a warning that <code class="language-python">AIRFLOW_UID</code> is not set, which you can safely ignore or fix by manually creating a <code class="language-python">.env</code> file with <code class="language-python">AIRFLOW_UID=50000</code>.</p><p>Step 2: Then, you must download the official Apache Airflow Docker Compose configuration:</p><pre><code class="language-bash"># To download the official docker-compose.yaml file:
+curl -LfO '&lt;https://airflow.apache.org/docs/apache-airflow/2.8.0/docker-compose.yaml&gt;'</code></pre><p>This will download <code class="language-python">docker-compose.yaml</code> into project directory. After downloading the file, apply the following modifications to it:</p><ul><li><p>Find the AIRFLOW_CORE_EXECUTOR setting and change the executor to <code class="language-python">LocalExecutor</code>:</p><pre><code class="language-bash">AIRFLOW__CORE__EXECUTOR: LocalExecutor</code></pre><p>This enables parallel task execution on a single machine without needing extra services such as Redis.</p></li><li><p>Also, remove or comment the Redis service and all related Redis configurations (use Ctrl+F to search for "redis”):</p><pre><code class="language-bash">depends_on:
+...
+#  redis:
+#      condition: service_healthy
+...
+services:
+...
+#  redis:
+#    image: redis:latest
+#    expose:
+#      - 6379
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#      interval: 10s
+#      timeout: 30s
+#      retries: 50
+#      start_period: 30s
+#    restart: always</code></pre><p>It simplifies the setup by eliminating unused services no longer required with <code class="language-python">LocalExecutor</code>.</p></li><li><p>Finally, add volume mounts to map local folders to the Airflow container, including the dataset folder:</p><pre><code class="language-bash">volumes:
+  - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
+  - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
+  - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+  - ${AIRFLOW_PROJ_DIR:-.}/dataset:/opt/airflow/dataset</code></pre></li></ul><p>Step 3: After you set up <code class="language-python">docker-compose.yaml</code> , create a file named <code class="language-python">fetch.py</code> inside the <code class="language-python">dags</code> folder. You need to create a data pipeline using Apache Airflow to collect, process, and store the latest stories from Hacker News:</p><ul><li><p>Use the Hacker News API endpoints listed above and keep only stories where <code class="language-python">"type"</code> is <code class="language-python">"story"</code> and <code class="language-python">"title"</code> is present.</p></li><li><p>Save the filtered stories to the <code class="language-python">/dataset/hn_stories.csv</code> file. Each row must contain the following fields: <code class="language-python">id</code>, <code class="language-python">title</code>, <code class="language-python">author</code>, <code class="language-python">created_at</code>, and <code class="language-python">url</code>.</p></li><li><p>Use the PostgreSQL service from your <code class="language-python">docker-compose.yaml</code> and the <code class="language-python">psycopg2</code> library to create a table and load data from the CSV file into it by executing SQL commands.</p></li><li><p>At the end of your DAG definition, ensure the DAG ID is correctly set and that all tasks are properly assigned to the DAG object.</p></li></ul><p>Step 4: After writing the script, you can run the following command to initialize the Airflow metadata database:</p><pre><code class="language-bash">docker compose up airflow-init</code></pre><p>Wait until it completes, then start all Airflow services with:</p><pre><code class="language-bash">docker compose up</code></pre><p>Step 5: Once running, access the Airflow web interface at <a href="http://localhost:8080" rel="noopener noreferrer nofollow" target="_blank">http://localhost:8080</a> using the default credentials — Username: <code class="language-python">airflow</code> and Password: <code class="language-python">airflow</code>. We can monitor and manage the <code class="language-python">hackernews_fetch</code> dag from the Dags tab in the Airflow web interface. To run it manually, go to the DAGs tab in the Airflow web interface and click on the <code class="language-python">hackernews_fetch</code> DAG to open its details. Then, click the "Trigger" button in the top right corner, select "Single run", and confirm.</p><h5 id="examples">Examples</h5><p>You can verify the results via the <code class="language-python">dataset/hn_stories.csv</code> file, which is created after the DAG finishes running. The file should look like this:</p><table><tbody><tr><th><p>id</p></th><th><p>title</p></th><th><p>author</p></th><th><p>created_at</p></th><th><p>url</p></th></tr><tr><td><p>44036668</p></td><td><p>Deliberate Boredom</p></td><td><p>herbertl</p></td><td><p>2025-05-20 0:56:44</p></td><td><p><a href="https://herbertlui.net/deliberate-boredom/" rel="noopener noreferrer nofollow" target="_blank">https://herbertlui.net/deliberate-boredom/</a></p></td></tr><tr><td><p>44036653</p></td><td><p>Ask HN: Is there a Wikipedia or LLM wrapper for kids (with parental controls)?</p></td><td><p>soferio</p></td><td><p>2025-05-20 0:53:11</p></td><td><p></p></td></tr><tr><td><p>44036651</p></td><td><p>French state covered up Nestle water scandal: Senate report</p></td><td><p>wslh</p></td><td><p>2025-05-20 0:52:48</p></td><td><p><a href="https://timesofindia.indiatimes.com/world/europe/french-state-covered-up-nestle-water-scandal-senate-report/articleshow/121266215.cms" rel="noopener noreferrer nofollow" target="_blank">https://timesofindia.indiatimes.com/world/europe/french-state-covered-up-nestle-water-scandal-senate-report/articleshow/121266215.cms</a></p></td></tr></tbody></table><p>In this dataset:</p><ul><li><p><code class="language-python">id</code>: Unique story ID from Hacker News.</p></li><li><p><code class="language-python">title</code>: Title of the story.</p></li><li><p><code class="language-python">author</code>: Username of the person who posted the story.</p></li><li><p><code class="language-python">created_at</code>: Date and time the story was posted (converted from UNIX timestamp).</p></li><li><p><code class="language-python">url</code>: External link associated with the story (if available).</p></li></ul>
+</div>

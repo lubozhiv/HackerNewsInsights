@@ -1,0 +1,44 @@
+type: edu
+files:
+  - name: main.py
+    visible: true
+    learner_created: false
+  - name: docker-compose.yaml
+    visible: true
+    learner_created: false
+  - name: Dockerfile
+    visible: true
+    learner_created: false
+  - name: test/__init__.py
+    visible: false
+    learner_created: false
+  - name: test/tests.py
+    visible: false
+    learner_created: false
+  - name: tests.py
+    visible: false
+    learner_created: false
+  - name: requirements.txt
+    visible: true
+    learner_created: true
+  - name: logs/dag_id=hackernews_analysis/run_id=scheduled__2025-06-01T211203.371516+0000/task_id=load_to_postgres/attempt=2.log
+    visible: true
+    learner_created: true
+  - name: dags/fetch.py
+    visible: true
+    learner_created: true
+  - name: dataset/hn_stories.csv
+    visible: true
+    learner_created: true
+  - name: dataset/company_prices_and_mentions.csv
+    visible: true
+    learner_created: true
+  - name: dataset/github_stats.csv
+    visible: true
+    learner_created: true
+feedback_link: https://hyperskill.org/learn/step/52610#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Wed, 11 Jun 2025 19:31:08 UTC"
+record: 9

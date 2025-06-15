@@ -1,0 +1,41 @@
+type: edu
+files:
+  - name: test/__init__.py
+    visible: false
+    learner_created: false
+  - name: test/tests.py
+    visible: false
+    learner_created: false
+  - name: main.py
+    visible: true
+    learner_created: false
+  - name: tests.py
+    visible: false
+    learner_created: false
+  - name: dags/hackernews_dag.py
+    visible: true
+    learner_created: true
+  - name: docker-compose.yaml
+    visible: true
+    learner_created: true
+  - name: Dockerfile
+    visible: true
+    learner_created: true
+  - name: config/airflow.cfg
+    visible: true
+    learner_created: true
+  - name: dockercompose_archive
+    visible: true
+    learner_created: true
+  - name: requirements.txt
+    visible: true
+    learner_created: true
+  - name: dataset/hn_stories.csv
+    visible: true
+    learner_created: true
+feedback_link: https://hyperskill.org/learn/step/52609#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: "Fri, 30 May 2025 13:21:27 UTC"
+record: 17
